@@ -1,4 +1,3 @@
 version: 1
-useDocker: false
 buildCommand: npm install
 startCommand: npm start
