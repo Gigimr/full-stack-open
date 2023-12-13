@@ -4,9 +4,10 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+app.use(cors());
 app.use(express.json());
 app.use(morgan('tiny'));
-app.use(cors());
+
 //to parse JSON bodies
 app.use(bodyParser.json());
 
