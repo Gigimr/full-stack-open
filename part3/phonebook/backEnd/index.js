@@ -4,6 +4,8 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+app.use(express.static('build'));
+
 app.use(cors());
 app.use(express.json());
 app.use(morgan('tiny'));
@@ -34,10 +36,6 @@ let persons = [
     number: '99-93-6623326',
   },
 ];
-
-app.get('/', (request, response) => {
-  response.send('<h1>Hello World!</h1>');
-});
 
 app.get('/api/persons', (request, response) => {
   response.json(persons);
