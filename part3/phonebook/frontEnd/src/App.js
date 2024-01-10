@@ -90,7 +90,15 @@ const App = () => {
         setTimeout(() => setNotificationInfo({}), 5000);
       })
       .catch((error) => {
-        console.error('Error creating person:', error);
+        if (error?.response?.data?.error) {
+          const errorMessage = error.response.data.error;
+          setNotificationInfo({
+            type: 'error',
+            message: `${errorMessage}`,
+          });
+          setTimeout(() => setNotificationInfo({}), 5000);
+        }
+        console.error('Error:', error);
       });
   };
 

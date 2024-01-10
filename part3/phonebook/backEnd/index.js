@@ -91,12 +91,20 @@ app.post('/api/persons', morganPost, (request, response, next) => {
       name: body.name,
       number: body.number,
     });
+    const validationErrors = person.validateSync();
+    if (validationErrors) {
+      console.log('ssd1223', validationErrors);
+      return next(validationErrors);
+    }
     person
       .save()
       .then((person) => {
         response.json(person);
       })
-      .catch((error) => next(error));
+      .catch((error) => {
+        console.log('errossr', error);
+        next(error);
+      });
   }
 });
 
@@ -121,7 +129,7 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint);
 
 const errorHandler = (error, request, response, next) => {
-  console.log(error.message);
+  console.log('errorrrr', error.response);
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' });
   }
