@@ -1,0 +1,11 @@
+/node_modules
+/.pnp
+.pnp.js
+/.env
+
+
+
+
+
+
+/*to use npm run build:ui and npm run deploy:full we need bash terminal*/
