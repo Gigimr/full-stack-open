@@ -21,7 +21,6 @@ const favoriteBlog = (blogs) => {
     likes: favInfo.likes,
   };
 };
-
 module.exports = {
   dummy,
   totalLikes,
