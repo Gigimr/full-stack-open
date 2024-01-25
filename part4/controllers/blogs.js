@@ -34,11 +34,11 @@ blogsRouter.post('/', async (request, response) => {
     likes: body.likes ? body.likes : 0,
   });
 
-  try {
+  if (body.title === undefined || body.url === undefined) {
+    return response.status(400).json({ error: 'token missing or invalid ' });
+  } else {
     const result = await blog.save();
     response.status(201).json(result);
-  } catch (error) {
-    response.status(500).json({ error: 'Error saving the blog' });
   }
 });
 blogsRouter.delete('/:id', async (request, response, next) => {

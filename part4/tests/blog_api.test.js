@@ -72,6 +72,28 @@ test('a valid blog without likes property will return 0', async () => {
   expect(totalLikes).toContain(0);
 });
 
+test('a valid blog must have a title property', async () => {
+  const newBlog = {
+    author: 'Mitchell Taylor',
+    url: 'https://taylorpatterns.com/',
+  };
+  await api.post('/api/blogs/').send(newBlog).expect(400);
+
+  const blogsAtEnd = await helper.blogInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+});
+
+test('a valid blog must have an url property', async () => {
+  const newBlog = {
+    title: 'JavaScript',
+    author: 'Midu Dev',
+  };
+  await api.post('/api/blogs/').send(newBlog).expect(400);
+
+  const blogsAtEnd = await helper.blogInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
