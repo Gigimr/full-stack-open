@@ -38,10 +38,9 @@ test('a specific blog can be viewed by id', async () => {
 
 test('a valid blog can be added', async () => {
   const newBlog = {
-    title: 'TDD harms architecture',
-    author: 'Robert C. Martin',
-    url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
-    likes: 1,
+    title: 'Canonical string reduction',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
   };
 
   await api
@@ -52,6 +51,25 @@ test('a valid blog can be added', async () => {
 
   const blogsAtEnd = await helper.blogInDb();
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+});
+
+test('a valid blog without likes property will return 0', async () => {
+  const newBlog = {
+    title: 'React patterns',
+    author: 'Michael Chan',
+    url: 'https://reactpatterns.com/',
+  };
+  await api
+    .post('/api/blogs/')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const blogsAtEnd = await helper.blogInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+
+  const totalLikes = blogsAtEnd.map((blog) => blog.likes);
+  expect(totalLikes).toContain(0);
 });
 
 afterAll(async () => {
