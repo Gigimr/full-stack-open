@@ -1,18 +1,17 @@
 const mongoose = require('mongoose');
 const supertest = require('supertest');
+const bcrypt = require('bcryptjs');
 const helper = require('./test_helper');
 const app = require('../app');
 const api = supertest(app);
+
+const User = require('../models/user');
 const Blog = require('../models/blog');
 
 beforeEach(async () => {
   await Blog.deleteMany({});
-  for (let blog of helper.initialBlogs) {
-    let blogObject = new Blog(blog);
-    await blogObject.save();
-  }
+  await Blog.insertMany(helper.initialBlogs);
 });
-
 describe('when there is initially some blogs saved', () => {
   test('blogs are returned as json', async () => {
     await api
@@ -136,6 +135,35 @@ describe('updating a blog', () => {
     const likesAfterUpdate = blogsAtEnd.map((blog) => blog.likes);
     expect(likesAfterUpdate).not.toContain(likesBeforeUpdate);
   });
+});
+
+beforeEach(async () => {
+  await User.deleteMany({});
+  const passwordHash = await bcrypt.hash('sekret', 10);
+  const user = new User({ username: 'root', passwordHash });
+
+  await user.save();
+});
+test('creation succeeds with a fresh username', async () => {
+  const usersAtStart = await helper.usersInDb();
+
+  const newUser = {
+    username: 'yuco20',
+    name: 'Gigi Mora',
+    password: 'salainen',
+  };
+
+  await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(200)
+    .expect('Content-Type', /application\/json/);
+
+  const usersAtEnd = await helper.usersInDb();
+  expect(usersAtEnd).toHaveLength(usersAtStart.length + 1);
+
+  const usernames = usersAtEnd.map((user) => user.username);
+  expect(usernames).toContain(newUser.username);
 });
 
 afterAll(async () => {
