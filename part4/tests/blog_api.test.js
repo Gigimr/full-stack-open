@@ -144,6 +144,7 @@ beforeEach(async () => {
 
   await user.save();
 });
+
 test('creation succeeds with a fresh username', async () => {
   const usersAtStart = await helper.usersInDb();
 
@@ -166,6 +167,107 @@ test('creation succeeds with a fresh username', async () => {
   expect(usernames).toContain(newUser.username);
 });
 
+test('creation fails without a username ', async () => {
+  const usersAtStart = await helper.usersInDb();
+
+  const newUser = {
+    name: 'Giadadaora',
+    password: 'ssfinen',
+  };
+
+  const response = await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+
+  expect(response.body.error).toContain('username and password must be given');
+  const usersAtEnd = await helper.usersInDb();
+  expect(usersAtEnd).toEqual(usersAtStart);
+});
+test('creation fails without a password ', async () => {
+  const usersAtStart = await helper.usersInDb();
+
+  const newUser = {
+    username: 'jussff',
+    name: 'Giadadaora',
+  };
+
+  const response = await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+
+  expect(response.body.error).toContain('username and password must be given');
+  const usersAtEnd = await helper.usersInDb();
+  expect(usersAtEnd).toEqual(usersAtStart);
+});
+test('creation fails without a unique username ', async () => {
+  const usersAtStart = await helper.usersInDb();
+
+  const newUser = {
+    username: 'root',
+    name: 'Giadadaora',
+    password: 'ssfinen',
+  };
+
+  const response = await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+
+  expect(response.body.errors.username.message).toContain(
+    'expected `username` to be unique'
+  );
+  const usersAtEnd = await helper.usersInDb();
+  expect(usersAtEnd).toEqual(usersAtStart);
+});
+
+test('creation fails without a username of at least 3 characters ', async () => {
+  const usersAtStart = await helper.usersInDb();
+
+  const newUser = {
+    username: 'ah',
+    name: 'Giadadaora',
+    password: 'ssfinen',
+  };
+
+  const response = await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+
+  expect(response.body.error).toContain(
+    'username and password must be at least 3 characters long'
+  );
+  const usersAtEnd = await helper.usersInDb();
+  expect(usersAtEnd).toEqual(usersAtStart);
+});
+
+test('creation fails without a password of at least 3 characters ', async () => {
+  const usersAtStart = await helper.usersInDb();
+
+  const newUser = {
+    username: 'ahmelia23',
+    name: 'Giadadaora',
+    password: 's',
+  };
+
+  const response = await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+
+  expect(response.body.error).toContain(
+    'username and password must be at least 3 characters long'
+  );
+  const usersAtEnd = await helper.usersInDb();
+  expect(usersAtEnd).toEqual(usersAtStart);
+});
 afterAll(async () => {
   await mongoose.connection.close();
 });
