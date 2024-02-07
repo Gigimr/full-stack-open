@@ -8,6 +8,7 @@ blogsRouter.get('/', async (request, response) => {
       username: 1,
       name: 1,
     });
+
     response.json(blogs);
   } catch (error) {
     response.status(500).json({ error: 'Error fetching blogs' });
@@ -52,10 +53,26 @@ blogsRouter.post('/', async (request, response) => {
 });
 blogsRouter.delete('/:id', async (request, response, next) => {
   try {
-    await Blog.findByIdAndDelete(request.params.id);
-    response.status(204).end();
-  } catch (exception) {
-    next(exception);
+    const user = await User.findById(request.decodedToken.id);
+    if (!user) {
+      return response.status(401).json({ error: 'Unauthorized' });
+    }
+    const blog = await Blog.findById(request.params.id);
+    if (!blog) {
+      return response.status(404).json({ error: 'Blog not found' });
+    }
+    console.log('blog0', blog);
+    console.log('blog1', blog.user.toString());
+    console.log('user', user.id);
+
+    if (blog.user.toString() === user.id) {
+      await Blog.deleteOne({ _id: request.params.id });
+      response.status(204).end();
+    } else {
+      response.status(401).end();
+    }
+  } catch (error) {
+    next(error);
   }
 });
 
