@@ -1,6 +1,5 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
-const User = require('../models/user');
 
 blogsRouter.get('/', async (request, response) => {
   try {
@@ -31,7 +30,7 @@ blogsRouter.get('/:id', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body;
-  const user = await User.findById(request.decodedToken.id);
+  const user = request.user;
 
   const blog = new Blog({
     title: body.title,
@@ -53,7 +52,7 @@ blogsRouter.post('/', async (request, response) => {
 });
 blogsRouter.delete('/:id', async (request, response, next) => {
   try {
-    const user = await User.findById(request.decodedToken.id);
+    const user = request.user;
     if (!user) {
       return response.status(401).json({ error: 'Unauthorized' });
     }
