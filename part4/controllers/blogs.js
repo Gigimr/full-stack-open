@@ -32,24 +32,29 @@ blogsRouter.post('/', async (request, response) => {
   const body = request.body;
   const user = request.user;
 
+  if (body.title === undefined || body.url === undefined) {
+    return response.status(400).json({ error: 'token missing or invalid ' });
+  }
+  console.log('user: ' + user._id);
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes ? body.likes : 0,
+    likes: body.likes || 0,
     user: user._id,
   });
 
-  if (body.title === undefined || body.url === undefined) {
-    return response.status(400).json({ error: 'token missing or invalid ' });
-  } else {
+  try {
     const savedBlog = await blog.save();
     user.blogs = user.blogs.concat(savedBlog._id);
     await user.save();
 
-    response.json(savedBlog);
+    response.status(201).json(savedBlog);
+  } catch (error) {
+    response.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 blogsRouter.delete('/:id', async (request, response, next) => {
   try {
     const user = request.user;
@@ -60,17 +65,15 @@ blogsRouter.delete('/:id', async (request, response, next) => {
     if (!blog) {
       return response.status(404).json({ error: 'Blog not found' });
     }
-    console.log('blog0', blog);
-    console.log('blog1', blog.user.toString());
-    console.log('user', user.id);
 
-    if (blog.user.toString() === user.id) {
+    if (blog.user && blog.user.toString() === user.id.toString()) {
       await Blog.deleteOne({ _id: request.params.id });
       response.status(204).end();
     } else {
-      response.status(401).end();
+      response.status(401).json({ error: 'Unauthorized' });
     }
   } catch (error) {
+    console.error('Error during delete request:', error);
     next(error);
   }
 });
@@ -82,7 +85,7 @@ blogsRouter.put('/:id', async (request, response, next) => {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes ? body.likes : 0,
+    likes: body.likes || 0,
   };
 
   try {
