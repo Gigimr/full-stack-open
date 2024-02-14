@@ -4,7 +4,7 @@ const User = require('../models/user');
 const initialBlogs = [
   {
     _id: '5a422a851b54a676234d17f7',
-    title: 'React patterns',
+    title: 'Angular patterns',
     author: 'Michael Chan',
     url: 'https://reactpatterns.com/',
     likes: 7,

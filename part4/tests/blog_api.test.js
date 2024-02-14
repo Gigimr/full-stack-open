@@ -272,19 +272,8 @@ describe('Blog API tests', () => {
     expect(blogsAtEnd).toHaveLength(blogsAtStart.length);
   });
   test('deletion of a blog - succeeds with status code 204 deleted', async () => {
-    const newBlog = {
-      title: 'Test Blog',
-      author: 'Test Author',
-      url: 'https://testblog.com/',
-    };
-    const createdBlog = await api
-      .post('/api/blogs/')
-      .send(newBlog)
-      .set('Authorization', authHeader)
-      .expect(201);
-
     const blogsAtStart = await helper.blogInDb();
-    const blogToDelete = createdBlog.body;
+    const blogToDelete = blogsAtStart.slice(-1)[0];
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)

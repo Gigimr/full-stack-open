@@ -35,7 +35,7 @@ blogsRouter.post('/', async (request, response) => {
   if (body.title === undefined || body.url === undefined) {
     return response.status(400).json({ error: 'token missing or invalid ' });
   }
-  console.log('user: ' + user._id);
+
   const blog = new Blog({
     title: body.title,
     author: body.author,
