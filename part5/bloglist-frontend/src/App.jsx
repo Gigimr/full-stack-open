@@ -19,7 +19,7 @@ const App = () => {
   }, [user]);
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser');
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
@@ -35,7 +35,7 @@ const App = () => {
         username,
         password,
       });
-      window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user));
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user));
 
       blogService.setToken(user.token);
       console.log('User logged in', user);
@@ -43,7 +43,13 @@ const App = () => {
       setUsername('');
       setPassword('');
     } catch (error) {
-      console.log(error);
+      if (error.response.data.error === 'invalid username or password') {
+        setNotificationInfo({
+          type: 'error',
+          message: 'wrong username or password',
+        });
+        setTimeout(() => setNotificationInfo(null), 7000);
+      }
     }
   };
 
@@ -93,14 +99,14 @@ const App = () => {
       {user === null ? (
         <div>
           <h1>Log in to application</h1>
+          {notificationInfo && (
+            <Notification notificationInfo={notificationInfo} />
+          )}
           {loginForm()}
         </div>
       ) : (
         <div className={claases.test}>
           <h1>Blogs</h1>
-          {notificationInfo && (
-            <Notification notificationInfo={notificationInfo} />
-          )}
 
           <p>
             {user.name} logged in <button onClick={handleLogOut}>logout</button>
