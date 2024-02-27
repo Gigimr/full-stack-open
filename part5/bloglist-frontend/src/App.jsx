@@ -3,7 +3,9 @@ import Blog from './components/Blog';
 import blogService from './services/blogs';
 import claases from './test.module.css';
 import loginService from './services/login';
-import BlogFom from './components/BlogForm';
+import BlogForm from './components/BlogForm';
+import LoginForm from './components/LoginForm';
+
 import Notification from './components/Notification';
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -59,30 +61,6 @@ const App = () => {
     window.location.href = 'http://localhost:5173/';
   };
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-  );
-
   const addBlog = (createBlog) => {
     blogService.create(createBlog).then((response) => {
       setBlogs(blogs.concat(response));
@@ -102,7 +80,13 @@ const App = () => {
           {notificationInfo && (
             <Notification notificationInfo={notificationInfo} />
           )}
-          {loginForm()}
+          <LoginForm
+            username={username}
+            password={password}
+            handleLogin={handleLogin}
+            setUsername={setUsername}
+            setPassword={setPassword}
+          />
         </div>
       ) : (
         <div className={claases.test}>
@@ -111,7 +95,7 @@ const App = () => {
           <p>
             {user.name} logged in <button onClick={handleLogOut}>logout</button>
           </p>
-          <BlogFom createBlog={addBlog} />
+          <BlogForm createBlog={addBlog} />
 
           <div>
             {blogs.map((blog) => (
