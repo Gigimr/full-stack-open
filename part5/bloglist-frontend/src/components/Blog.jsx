@@ -1,4 +1,4 @@
-const Blog = ({ blog }) => {
+const Blog = ({ blog, showInfo, showMore }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -9,8 +9,20 @@ const Blog = ({ blog }) => {
   return (
     <div style={blogStyle}>
       <div>
-        {blog.title} {blog.author} <button>view</button>
+        {blog.title}
+        <button onClick={() => showInfo(blog.id)}>
+          {showMore[blog.id] ? 'hide' : 'view'}
+        </button>
       </div>
+      {showMore[blog.id] && (
+        <div>
+          {blog.author}
+          <br />
+          {blog.url}
+          <br />
+          {blog.likes}
+        </div>
+      )}
     </div>
   );
 };

@@ -14,6 +14,7 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const [notificationInfo, setNotificationInfo] = useState(null);
+  const [showMore, setShowMore] = useState({});
 
   const blogFormRef = useRef();
 
@@ -76,6 +77,12 @@ const App = () => {
     });
   };
 
+  const showInfo = (blogId) => {
+    setShowMore({
+      ...showMore,
+      [blogId]: !showMore[blogId],
+    });
+  };
   return (
     <div>
       {user === null ? (
@@ -103,7 +110,12 @@ const App = () => {
           </Togglable>
           <div>
             {blogs.map((blog) => (
-              <Blog key={blog.id} blog={blog} />
+              <Blog
+                key={blog.id}
+                blog={blog}
+                showInfo={showInfo}
+                showMore={showMore}
+              />
             ))}
           </div>
         </div>
