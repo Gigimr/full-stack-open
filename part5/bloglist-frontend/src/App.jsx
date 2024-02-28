@@ -1,18 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Blog from './components/Blog';
 import blogService from './services/blogs';
 import claases from './test.module.css';
 import loginService from './services/login';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
-
+import Togglable from './components/Togglable';
 import Notification from './components/Notification';
+
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const [notificationInfo, setNotificationInfo] = useState(null);
+
+  const blogFormRef = useRef();
 
   useEffect(() => {
     if (user?.token) {
@@ -62,6 +65,7 @@ const App = () => {
   };
 
   const addBlog = (createBlog) => {
+    blogFormRef.current.toggleVisibility();
     blogService.create(createBlog).then((response) => {
       setBlogs(blogs.concat(response));
       setNotificationInfo({
@@ -91,12 +95,12 @@ const App = () => {
       ) : (
         <div className={claases.test}>
           <h1>Blogs</h1>
-
           <p>
             {user.name} logged in <button onClick={handleLogOut}>logout</button>
           </p>
-          <BlogForm createBlog={addBlog} />
-
+          <Togglable buttonLabel="new blog" ref={blogFormRef}>
+            <BlogForm createBlog={addBlog} />
+          </Togglable>
           <div>
             {blogs.map((blog) => (
               <Blog key={blog.id} blog={blog} />
