@@ -79,6 +79,7 @@ blogsRouter.delete('/:id', async (request, response, next) => {
 });
 
 blogsRouter.put('/:id', async (request, response, next) => {
+  console.log('put request:', request);
   const body = request.body;
 
   const blog = {

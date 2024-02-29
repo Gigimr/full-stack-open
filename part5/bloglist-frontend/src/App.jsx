@@ -83,6 +83,18 @@ const App = () => {
       [blogId]: !showMore[blogId],
     });
   };
+
+  const addingLikes = async (id, blogObject) => {
+    await blogService.update(id, blogObject);
+    const newBlogs = blogs.map((blog) => {
+      if (blog.id === id) {
+        blog.likes += 1;
+      }
+      return blog;
+    });
+    setBlogs(newBlogs);
+  };
+
   return (
     <div>
       {user === null ? (
@@ -115,6 +127,7 @@ const App = () => {
                 blog={blog}
                 showInfo={showInfo}
                 showMore={showMore}
+                addingLikes={addingLikes}
               />
             ))}
           </div>

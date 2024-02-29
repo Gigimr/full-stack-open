@@ -28,5 +28,14 @@ const create = async (newObject) => {
     throw error;
   }
 };
+const update = async (id, newObject) => {
+  try {
+    const response = await axios.put(`${baseUrl}/${id}`, newObject, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating blog:', error);
+    throw error;
+  }
+};
 
-export default { getAll, setToken, create };
+export default { getAll, setToken, create, update };
