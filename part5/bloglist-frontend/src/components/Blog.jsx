@@ -21,6 +21,8 @@ const Blog = ({ blog, showInfo, showMore }) => {
           {blog.url}
           <br />
           {blog.likes}
+          <button>like</button>
+          {blog.user && <div>{blog.user.username}</div>}
         </div>
       )}
     </div>
