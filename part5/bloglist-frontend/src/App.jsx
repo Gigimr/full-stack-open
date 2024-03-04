@@ -95,6 +95,11 @@ const App = () => {
     setBlogs(newBlogs);
   };
 
+  const deletingBlogs = async (id) => {
+    await blogService.deleted(id);
+    setBlogs(blogs.filter((b) => b.id !== id));
+  };
+
   return (
     <div>
       {user === null ? (
@@ -130,6 +135,8 @@ const App = () => {
                   showInfo={showInfo}
                   showMore={showMore}
                   addingLikes={addingLikes}
+                  deletingBlogs={deletingBlogs}
+                  loggedInUser={user}
                 />
               ))}
           </div>
