@@ -49,8 +49,8 @@ const Blog = ({
           {blog.user &&
             loggedInUser &&
             blog.user.username === loggedInUser.username && (
-              <button onClick={confirmDelete}>remove</button>
-            )}
+            <button onClick={confirmDelete}>remove</button>
+          )}
         </div>
       )}
     </div>
