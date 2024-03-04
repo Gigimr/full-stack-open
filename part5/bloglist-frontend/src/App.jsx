@@ -69,6 +69,7 @@ const App = () => {
     blogFormRef.current.toggleVisibility();
     blogService.create(createBlog).then((response) => {
       setBlogs(blogs.concat(response));
+      console.log('wee');
       setNotificationInfo({
         type: 'success',
         message: `A new blog ${createBlog.title}  by ${createBlog.author} added`,
@@ -119,6 +120,9 @@ const App = () => {
       ) : (
         <div className={claases.test}>
           <h1>Blogs</h1>
+          {notificationInfo && (
+            <Notification notificationInfo={notificationInfo} />
+          )}
           <p>
             {user.name} logged in <button onClick={handleLogOut}>logout</button>
           </p>
