@@ -1,7 +1,6 @@
+import { useState } from 'react';
 const Blog = ({
   blog,
-  showInfo,
-  showMore,
   addingLikes,
   deletingBlogs,
   loggedInUser,
@@ -13,7 +12,14 @@ const Blog = ({
     borderWidth: 1,
     marginBottom: 5,
   };
+  const [visible, setVisible] = useState(false);
 
+  const hideWhenVisible = { display: visible ? 'none' : '' };
+  const showWhenVisible = { display: visible ? '' : 'none' };
+
+  const toggleVisibility = () => {
+    setVisible(!visible);
+  };
   const handleLikes = () => {
     const blogObject = {
       title: blog.title,
@@ -30,29 +36,30 @@ const Blog = ({
     }
   };
   return (
-    <div style={blogStyle}>
-      <div>
-        {blog.title}
-        <button onClick={() => showInfo(blog.id)}>
-          {showMore[blog.id] ? 'hide' : 'view'}
+    <div style={blogStyle}className="blog">
+      <div style={hideWhenVisible} className='unvisible'>
+        {blog.title} {blog.author}
+        <button onClick=
+          {toggleVisibility}>
+          view
         </button>
       </div>
-      {showMore[blog.id] && (
+      <div style={showWhenVisible}>
         <div>
-          {blog.author}
-          <br />
           {blog.url}
-          <br />
+          <br/>
           {blog.likes}
-          <button onClick={handleLikes}>like</button>
-          {blog.user && <div>{blog.user.username}</div>}
-          {blog.user &&
+          <button onClick={toggleVisibility}>hide</button>
+        </div>
+        <button onClick={handleLikes}>like</button>
+        {blog.user && <div>{blog.user.username}</div>}
+        {blog.user &&
             loggedInUser &&
             blog.user.username === loggedInUser.username && (
-            <button onClick={confirmDelete}>remove</button>
-          )}
-        </div>
-      )}
+          <button onClick={confirmDelete}>remove</button>
+        )}
+      </div>
+
     </div>
   );
 };

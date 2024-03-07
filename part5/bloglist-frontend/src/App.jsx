@@ -14,7 +14,6 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const [notificationInfo, setNotificationInfo] = useState(null);
-  const [showMore, setShowMore] = useState({});
 
   const blogFormRef = useRef();
 
@@ -77,13 +76,6 @@ const App = () => {
     });
   };
 
-  const showInfo = (blogId) => {
-    setShowMore({
-      ...showMore,
-      [blogId]: !showMore[blogId],
-    });
-  };
-
   const addingLikes = async (id, blogObject) => {
     await blogService.update(id, blogObject);
     const newBlogs = blogs.map((blog) => {
@@ -135,8 +127,6 @@ const App = () => {
                 <Blog
                   key={blog.id}
                   blog={blog}
-                  showInfo={showInfo}
-                  showMore={showMore}
                   addingLikes={addingLikes}
                   deletingBlogs={deletingBlogs}
                   loggedInUser={user}
