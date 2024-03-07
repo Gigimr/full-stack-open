@@ -69,7 +69,6 @@ const App = () => {
     blogFormRef.current.toggleVisibility();
     blogService.create(createBlog).then((response) => {
       setBlogs(blogs.concat(response));
-      console.log('wee');
       setNotificationInfo({
         type: 'success',
         message: `A new blog ${createBlog.title}  by ${createBlog.author} added`,
