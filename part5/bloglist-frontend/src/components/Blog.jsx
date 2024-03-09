@@ -14,12 +14,10 @@ const Blog = ({
   };
   const [visible, setVisible] = useState(false);
 
-  const hideWhenVisible = { display: visible ? 'none' : '' };
-  const showWhenVisible = { display: visible ? '' : 'none' };
-
   const toggleVisibility = () => {
     setVisible(!visible);
   };
+
   const handleLikes = () => {
     const blogObject = {
       title: blog.title,
@@ -35,31 +33,24 @@ const Blog = ({
       deletingBlogs(blog.id);
     }
   };
+
   return (
     <div style={blogStyle}className="blog">
-      <div style={hideWhenVisible} className='unvisible'>
-        {blog.title} {blog.author}
-        <button onClick=
-          {toggleVisibility}>
-          view
-        </button>
-      </div>
-      <div style={showWhenVisible}>
-        <div>
-          {blog.url}
-          <br/>
-          {blog.likes}
-          <button onClick={toggleVisibility}>hide</button>
-        </div>
+      <span id='blogTitle'>{blog.title}</span> - <span id='blogAuthor'>{blog.author}</span>
+      <button onClick={toggleVisibility}>{!visible?'view':'hide'}</button>
+      {visible &&<>
+        <br/>
+        <span id='blogUrl'>{blog.url}</span>
+        <br/>
+        <span id='blogLikes'>{blog.likes}</span>
         <button onClick={handleLikes}>like</button>
         {blog.user && <div>{blog.user.username}</div>}
         {blog.user &&
-            loggedInUser &&
-            blog.user.username === loggedInUser.username && (
+          loggedInUser &&
+          blog.user.username === loggedInUser.username && (
           <button onClick={confirmDelete}>remove</button>
         )}
-      </div>
-
+      </> }
     </div>
   );
 };

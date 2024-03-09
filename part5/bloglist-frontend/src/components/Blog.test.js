@@ -1,21 +1,58 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Blog from './Blog';
 
-test('renders content', () => {
-  const blog  = {
-    title: 'Component testing is done with react-testing-library',
-    author : 'John',
-    url: 'http://localhost.com',
-    likes: 12
-  };
-  const { container } = render(<Blog blog={blog} />);
+describe('Blog Test', () => {
 
-  screen.debug();
+  test('renders content', () => {
+    const blog  = {
+      title: 'Component testing is done with react-testing-library',
+      author : 'John',
+      url: 'http://localhost.com',
+      likes: 12
+    };
+    const { container } = render(<Blog blog={blog} />);
 
-  const div = container.querySelector('.unvisible');
+    let blogTitle = container.querySelector('#blogTitle');
+    let blogAuthor = container.querySelector('#blogAuthor');
 
-  expect(div).toHaveTextContent('Component testing is done with react-testing-library John');
+    expect(blogTitle).toHaveTextContent('Component testing is done with react-testing-library');
+    expect(blogAuthor).toHaveTextContent('John');
+    expect(blogTitle).toBeTruthy();
+    expect(blogAuthor).toBeTruthy();
+  });
 
+  test('check that the blog url and number of likes are displayed when clicked', async () => {
+    const blog  = {
+      title: 'Component testing is done with react-testing-library',
+      author : 'John',
+      url: 'http://localhost.com',
+      likes: 12
+    };
+
+    const { container } = render(<Blog blog={blog}/>);
+    let blogUrl = container.querySelector('#blogUrl');
+    let blogLikes = container.querySelector('#blogLikes');
+    expect(blogLikes).toBeFalsy();
+    expect(blogUrl).toBeFalsy();
+
+    const user = userEvent.setup();
+    const button = screen.getByText('view');
+    await user.click(button);
+
+    blogUrl = container.querySelector('#blogUrl');
+    blogLikes = container.querySelector('#blogLikes');
+    expect(blogUrl).toBeTruthy();
+    expect(blogLikes).toBeTruthy();
+
+    const hideButton = screen.getByText('hide');
+    await user.click(hideButton);
+
+    blogUrl = container.querySelector('#blogUrl');
+    blogLikes = container.querySelector('#blogLikes');
+    expect(blogLikes).toBeFalsy();
+    expect(blogUrl).toBeFalsy();
+  });
 });
