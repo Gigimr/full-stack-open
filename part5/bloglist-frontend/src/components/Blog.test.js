@@ -55,4 +55,29 @@ describe('Blog Test', () => {
     expect(blogLikes).toBeFalsy();
     expect(blogUrl).toBeFalsy();
   });
+
+  test('check that the like button is clicked twice', async () => {
+
+    const blog  = {
+      title: 'Component testing is done with react-testing-library',
+      author : 'John',
+      url: 'http://localhost.com',
+      likes: 12
+    };
+
+    const addingLikesMock = jest.fn();
+
+    const { container } = render(<Blog blog={blog} addingLikes={addingLikesMock}/>);
+
+    const user = userEvent.setup();
+    const viewButton = screen.getByText('view');
+    await user.click(viewButton);
+    
+    const likeButton = screen.getByText('like');
+    await user.click(likeButton);
+    await user.click(likeButton);
+
+    expect(addingLikesMock).toHaveBeenCalledTimes(2);
+  });
+
 });
